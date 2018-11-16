@@ -33,6 +33,10 @@ func (WSMessageTransmitter) OnRecvMessage(ses cellnet.Session) (msg interface{},
 
 	switch messageType {
 	case websocket.BinaryMessage:
+		//修复客服端发送空数据导致进程意外退出
+		if len(raw) < MsgIDSize {
+			return
+		}
 		msgID := binary.LittleEndian.Uint16(raw)
 		msgData := raw[MsgIDSize:]
 
